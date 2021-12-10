@@ -39,6 +39,19 @@ const App = () => {
   });
 
   useEffect(() => {
+    setLineList([]);
+    setStationList([]);
+    setAscendingList([]);
+    setDescendingList([]);
+  }, [operator]);
+
+  useEffect(() => {
+    setStationList([]);
+    setAscendingList([]);
+    setDescendingList([]);
+  }, [line]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       const date = new Date();
       setTime(`${date.getHours()}:${("0" + date.getMinutes()).slice(-2)}`);

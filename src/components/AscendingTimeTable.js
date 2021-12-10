@@ -13,23 +13,21 @@ const AscendingTimeTable = ({ ascendingList, operator, time }) => {
       </thead>
       <tbody>
         {ascendingList.map((data, index) => {
-          if (data["odpt:departureTime"] > time) {
-            return (
-              <tr key={index}>
-                <th scope="row">{index + 1}</th>
-                <td>{data["odpt:departureTime"]}</td>
-                <td>
-                  {data["odpt:trainType"].replace(
-                    `odpt.TrainType:${operator}.`,
-                    ""
-                  )}
-                </td>
-                <td>{getName(data["odpt:destinationStation"][0])}</td>
-              </tr>
-            );
-          } else {
-            return "";
-          }
+          return data["odpt:departureTime"] > time ? (
+            <tr key={index}>
+              <th scope="row">{index + 1}</th>
+              <td>{data["odpt:departureTime"]}</td>
+              <td>
+                {data["odpt:trainType"].replace(
+                  `odpt.TrainType:${operator}.`,
+                  ""
+                )}
+              </td>
+              <td>{getName(data["odpt:destinationStation"][0])}</td>
+            </tr>
+          ) : (
+            ""
+          );
         })}
       </tbody>
     </table>
