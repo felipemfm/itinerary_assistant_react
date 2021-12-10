@@ -1,8 +1,7 @@
 import React from "react";
 
-const DescendingTimeTable = ({ descendingList, operator }) => {
+const DescendingTimeTable = ({ descendingList, operator, time }) => {
   return (
-      
     <table className="table">
       <thead>
         <tr>
@@ -14,19 +13,23 @@ const DescendingTimeTable = ({ descendingList, operator }) => {
       </thead>
       <tbody>
         {descendingList.map((data, index) => {
-          return (
-            <tr key={index}>
-              <th scope="row">{index + 1}</th>
-              <td>{data["odpt:departureTime"]}</td>
-              <td>
-                {data["odpt:trainType"].replace(
-                  `odpt.TrainType:${operator}.`,
-                  ""
-                )}
-              </td>
-              <td>{getName(data["odpt:destinationStation"][0])}</td>
-            </tr>
-          );
+          if (data["odpt:departureTime"] > time) {
+            return (
+              <tr key={index}>
+                <th scope="row">{index + 1}</th>
+                <td>{data["odpt:departureTime"]}</td>
+                <td>
+                  {data["odpt:trainType"].replace(
+                    `odpt.TrainType:${operator}.`,
+                    ""
+                  )}
+                </td>
+                <td>{getName(data["odpt:destinationStation"][0])}</td>
+              </tr>
+            );
+          }else{
+              return "";
+          }
         })}
       </tbody>
     </table>

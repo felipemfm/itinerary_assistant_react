@@ -11,6 +11,7 @@ const apiKey = process.env.REACT_APP_API_KEY;
 
 const App = () => {
   const [day, setDay] = useState("");
+  const [time, setTime] = useState("");
   const operatorList = ["JR-East", "TokyoMetro", "Toei"];
   const [operator, setOperator] = useState("");
   const [lineList, setLineList] = useState([]);
@@ -36,6 +37,14 @@ const App = () => {
     };
     getDate();
   });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const date = new Date();
+      setTime(`${date.getHours()}:${("0" + date.getMinutes()).slice(-2)}`);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (operator !== "") {
@@ -106,6 +115,7 @@ const App = () => {
 
   return (
     <div className="container">
+      <h3>{time}</h3>
       <div className="row">
         <div className="col">
           <OperatorSelect
@@ -125,6 +135,7 @@ const App = () => {
           <AscendingTimeTable
             ascendingList={ascendingList}
             operator={operator}
+            time={time}
           />
         </div>
         <div className="col">
@@ -132,6 +143,7 @@ const App = () => {
           <DescendingTimeTable
             descendingList={descendingList}
             operator={operator}
+            time={time}
           />
         </div>
       </div>
