@@ -2,12 +2,17 @@ import React from "react";
 
 import { getName, getCountdown } from "../functions/function";
 
-const AscendingTimeTable = ({ ascendingList, operator, time }) => {
+const AscendingTimeTable = ({
+  ascendingList,
+  operator,
+  time,
+  setTrainNumber,
+}) => {
   return (
-    <table className="table">
+    <table className="table table-hover">
       <thead>
         <tr>
-          <th scope="col">Departure</th>
+          <th scope="col">Time</th>
           <th scope="col">⏱</th>
           <th scope="col">Type</th>
           <th scope="col">Destination</th>
@@ -16,7 +21,10 @@ const AscendingTimeTable = ({ ascendingList, operator, time }) => {
       <tbody>
         {ascendingList.map((data, index) => {
           return data["odpt:departureTime"] > time ? (
-            <tr key={index}>
+            <tr
+              key={index}
+              onClick={() => setTrainNumber(data["odpt:trainNumber"])}
+            >
               <td>{data["odpt:departureTime"]}</td>
               <td className=" fw-bold">
                 {getCountdown(time, data["odpt:departureTime"])}

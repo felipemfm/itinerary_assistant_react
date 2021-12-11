@@ -6,6 +6,7 @@ import LineSelect from "./components/LineSelect";
 import OriginSelect from "./components/OriginSelect";
 import AscendingTimeTable from "./components/AscendingTimeTable";
 import DescendingTimeTable from "./components/DescendingTimeTable";
+import TrainTimeTable from "./components/TrainTimeTable";
 
 import { getName } from "./functions/function";
 
@@ -24,6 +25,8 @@ const App = () => {
   const [ascendingList, setAscendingList] = useState([]);
   const [descending, setDescending] = useState("");
   const [descendingList, setDescendingList] = useState([]);
+  const [trainNumber, setTrainNumber] = useState("");
+  const [trainTimeTable, setTrainTimeTable] = useState([]);
 
   useEffect(() => {
     const date = new Date();
@@ -47,17 +50,20 @@ const App = () => {
     setDescendingList([]);
     setAscending("");
     setDescending("");
+    setTrainTimeTable([]);
   }, [operator]);
 
   useEffect(() => {
     setStationList([]);
     setAscendingList([]);
     setDescendingList([]);
+    setTrainTimeTable([]);
   }, [line]);
 
   useEffect(() => {
     setAscendingList([]);
     setDescendingList([]);
+    setTrainTimeTable([]);
   }, [originStation]);
 
   useEffect(() => {
@@ -113,7 +119,7 @@ const App = () => {
       );
       if (data.length > 0) {
         setAscendingList(data[0]["odpt:stationTimetableObject"]);
-        console.log(data[0]["odpt:stationTimetableObject"]);
+        // console.log(data[0]["odpt:stationTimetableObject"]);
       }
     };
     getAscendingTimeTable();
@@ -128,12 +134,27 @@ const App = () => {
       );
       if (data.length > 0) {
         setDescendingList(data[0]["odpt:stationTimetableObject"]);
-        console.log(data[0]["odpt:stationTimetableObject"]);
+        // console.log(data[0]["odpt:stationTimetableObject"]);
       }
     };
     getDescendingTimeTable();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [originStation, descending]);
+
+  useEffect(() => {
+    var name = line.replace("odpt.Railway:", "");
+    const getTrainTimeTable = async () => {
+      const { data } = await axios.get(
+        `https://api-tokyochallenge.odpt.org/api/v4/datapoints/odpt.TrainTimetable:${name}.${trainNumber}.${day}?acl:consumerKey=${apiKey}`
+      );
+      if (data.length > 0) {
+        // console.log(data[0]["odpt:trainTimetableObject"]);
+        setTrainTimeTable(data[0]["odpt:trainTimetableObject"]);
+      }
+    };
+    getTrainTimeTable();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trainNumber]);
 
   return (
     <div className="container">
@@ -151,6 +172,9 @@ const App = () => {
             originStation={originStation}
             setOriginStation={setOriginStation}
           />
+          <div className="container">
+            <TrainTimeTable trainTimeTable={trainTimeTable} time={time} />
+          </div>
         </div>
         <div className="col">
           <h5>Direction: {getName(ascending)}</h5>
@@ -158,6 +182,7 @@ const App = () => {
             ascendingList={ascendingList}
             operator={operator}
             time={time}
+            setTrainNumber={setTrainNumber}
           />
         </div>
         <div className="col">
@@ -166,6 +191,7 @@ const App = () => {
             descendingList={descendingList}
             operator={operator}
             time={time}
+            setTrainNumber={setTrainNumber}
           />
         </div>
       </div>
