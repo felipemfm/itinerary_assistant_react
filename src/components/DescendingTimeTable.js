@@ -1,12 +1,14 @@
 import React from "react";
 
+import { getName, getCountdown } from "../functions/function";
+
 const DescendingTimeTable = ({ descendingList, operator, time }) => {
   return (
     <table className="table">
       <thead>
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">Departure Time</th>
+          <th scope="col">Departure</th>
+          <th scope="col">⏱</th>
           <th scope="col">Type</th>
           <th scope="col">Destination</th>
         </tr>
@@ -15,8 +17,10 @@ const DescendingTimeTable = ({ descendingList, operator, time }) => {
         {descendingList.map((data, index) => {
           return data["odpt:departureTime"] > time ? (
             <tr key={index}>
-              <th scope="row">{index + 1}</th>
               <td>{data["odpt:departureTime"]}</td>
+              <td className="fw-bold">
+                {getCountdown(time, data["odpt:departureTime"])}
+              </td>
               <td>
                 {data["odpt:trainType"].replace(
                   `odpt.TrainType:${operator}.`,
@@ -33,10 +37,5 @@ const DescendingTimeTable = ({ descendingList, operator, time }) => {
     </table>
   );
 };
-
-function getName(words) {
-  var n = words.split(".");
-  return n[n.length - 1];
-}
 
 export default DescendingTimeTable;

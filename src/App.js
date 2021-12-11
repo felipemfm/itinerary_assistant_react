@@ -7,6 +7,8 @@ import OriginSelect from "./components/OriginSelect";
 import AscendingTimeTable from "./components/AscendingTimeTable";
 import DescendingTimeTable from "./components/DescendingTimeTable";
 
+import { getName } from "./functions/function";
+
 const apiKey = process.env.REACT_APP_API_KEY;
 
 const App = () => {
@@ -43,6 +45,8 @@ const App = () => {
     setStationList([]);
     setAscendingList([]);
     setDescendingList([]);
+    setAscending("");
+    setDescending("");
   }, [operator]);
 
   useEffect(() => {
@@ -50,6 +54,11 @@ const App = () => {
     setAscendingList([]);
     setDescendingList([]);
   }, [line]);
+
+  useEffect(() => {
+    setAscendingList([]);
+    setDescendingList([]);
+  }, [originStation]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -128,7 +137,7 @@ const App = () => {
 
   return (
     <div className="container">
-      <h3>{time}</h3>
+      <h3 className="text-center">{time}</h3>
       <div className="row">
         <div className="col">
           <OperatorSelect
@@ -144,7 +153,7 @@ const App = () => {
           />
         </div>
         <div className="col">
-          <h5>AscendingTimeTable</h5>
+          <h5>Direction: {getName(ascending)}</h5>
           <AscendingTimeTable
             ascendingList={ascendingList}
             operator={operator}
@@ -152,7 +161,7 @@ const App = () => {
           />
         </div>
         <div className="col">
-          <h5>DescendingTimeTable</h5>
+          <h5>Direction: {getName(descending)}</h5>
           <DescendingTimeTable
             descendingList={descendingList}
             operator={operator}
