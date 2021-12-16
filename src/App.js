@@ -19,6 +19,7 @@ const App = () => {
   const [operator, setOperator] = useState("");
   const [lineList, setLineList] = useState([]);
   const [line, setLine] = useState("");
+  const [lineColor, setLineColor] = useState("");
   const [stationList, setStationList] = useState([]);
   const [originStation, setOriginStation] = useState("");
   const [ascending, setAscending] = useState("");
@@ -93,6 +94,7 @@ const App = () => {
         const { data } = await axios.get(
           `https://api-tokyochallenge.odpt.org/api/v4/datapoints/${line}?acl:consumerKey=${apiKey}`
         );
+        setLineColor(data[0]["odpt:color"]);
         setAscending(
           data[0]["odpt:ascendingRailDirection"].replace(
             "odpt.RailDirection:",
@@ -119,7 +121,7 @@ const App = () => {
       );
       if (data.length > 0) {
         setAscendingList(data[0]["odpt:stationTimetableObject"]);
-        // console.log(data[0]["odpt:stationTimetableObject"]);
+        // console.log(data);
       }
     };
     getAscendingTimeTable();
@@ -134,7 +136,7 @@ const App = () => {
       );
       if (data.length > 0) {
         setDescendingList(data[0]["odpt:stationTimetableObject"]);
-        // console.log(data[0]["odpt:stationTimetableObject"]);
+        // console.log(data);
       }
     };
     getDescendingTimeTable();
@@ -148,7 +150,7 @@ const App = () => {
         `https://api-tokyochallenge.odpt.org/api/v4/datapoints/odpt.TrainTimetable:${name}.${trainNumber}.${day}?acl:consumerKey=${apiKey}`
       );
       if (data.length > 0) {
-        console.log(data[0]["odpt:trainTimetableObject"]);
+        // console.log(data[0]["odpt:trainTimetableObject"]);
         setTrainTimeTable(data[0]["odpt:trainTimetableObject"]);
       }
     };
@@ -194,7 +196,11 @@ const App = () => {
       </div>
 
       <div className="container">
-        <TrainTimeTable trainTimeTable={trainTimeTable} time={time} />
+        <TrainTimeTable
+          trainTimeTable={trainTimeTable}
+          color={lineColor}
+          station={originStation}
+        />
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ const DescendingTimeTable = ({
   return (
     <div className="container overflow-auto" style={{ height: "400px" }}>
       <table className="table table-hover">
-        <thead>
+        <thead className="sticky-top" style={{ "background-color": "white" }}>
           <tr>
             <th scope="col">Time</th>
             <th scope="col">⏱</th>
