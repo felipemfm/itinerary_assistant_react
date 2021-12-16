@@ -148,7 +148,7 @@ const App = () => {
         `https://api-tokyochallenge.odpt.org/api/v4/datapoints/odpt.TrainTimetable:${name}.${trainNumber}.${day}?acl:consumerKey=${apiKey}`
       );
       if (data.length > 0) {
-        // console.log(data[0]["odpt:trainTimetableObject"]);
+        console.log(data[0]["odpt:trainTimetableObject"]);
         setTrainTimeTable(data[0]["odpt:trainTimetableObject"]);
       }
     };
@@ -157,10 +157,10 @@ const App = () => {
   }, [trainNumber]);
 
   return (
-    <div className="container">
-      <h3 className="text-center">{time}</h3>
+    <div className="container-fluid">
       <div className="row">
-        <div className="col">
+        <div className="col mt-5">
+          <p className="text-center fs-2">{time}</p>
           <OperatorSelect
             operatorList={operatorList}
             operator={operator}
@@ -172,12 +172,9 @@ const App = () => {
             originStation={originStation}
             setOriginStation={setOriginStation}
           />
-          <div className="container">
-            <TrainTimeTable trainTimeTable={trainTimeTable} time={time} />
-          </div>
         </div>
         <div className="col">
-          <h5>Direction: {getName(ascending)}</h5>
+          <p className="fs-3">Direction: {getName(ascending)}</p>
           <AscendingTimeTable
             ascendingList={ascendingList}
             operator={operator}
@@ -186,7 +183,7 @@ const App = () => {
           />
         </div>
         <div className="col">
-          <h5>Direction: {getName(descending)}</h5>
+          <p className="fs-3">Direction: {getName(descending)}</p>
           <DescendingTimeTable
             descendingList={descendingList}
             operator={operator}
@@ -194,6 +191,10 @@ const App = () => {
             setTrainNumber={setTrainNumber}
           />
         </div>
+      </div>
+
+      <div className="container">
+        <TrainTimeTable trainTimeTable={trainTimeTable} time={time} />
       </div>
     </div>
   );
