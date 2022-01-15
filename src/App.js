@@ -4,8 +4,7 @@ import axios from "axios";
 import OperatorSelect from "./components/OperatorSelect";
 import LineSelect from "./components/LineSelect";
 import OriginSelect from "./components/OriginSelect";
-import AscendingTimeTable from "./components/AscendingTimeTable";
-import DescendingTimeTable from "./components/DescendingTimeTable";
+import TimeTable from "./components/TimeTable";
 import TrainTimeTable from "./components/TrainTimeTable";
 
 import { getName } from "./functions/function";
@@ -177,8 +176,8 @@ const App = () => {
         </div>
         <div className="col">
           <p className="fs-3">Direction: {getName(ascending)}</p>
-          <AscendingTimeTable
-            ascendingList={ascendingList}
+          <TimeTable
+            list={ascendingList}
             operator={operator}
             time={time}
             setTrainNumber={setTrainNumber}
@@ -186,8 +185,8 @@ const App = () => {
         </div>
         <div className="col">
           <p className="fs-3">Direction: {getName(descending)}</p>
-          <DescendingTimeTable
-            descendingList={descendingList}
+          <TimeTable
+            list={descendingList}
             operator={operator}
             time={time}
             setTrainNumber={setTrainNumber}

@@ -3,7 +3,7 @@ import React from "react";
 import { getName, getCountdown } from "../functions/function";
 
 const AscendingTimeTable = ({
-  ascendingList,
+  list,
   operator,
   time,
   setTrainNumber,
@@ -20,7 +20,7 @@ const AscendingTimeTable = ({
           </tr>
         </thead>
         <tbody>
-          {ascendingList.map((data, index) => {
+          {list.map((data, index) => {
             return data["odpt:departureTime"] > time ? (
               <tr
                 key={index}
