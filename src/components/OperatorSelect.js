@@ -9,7 +9,7 @@ const OperatorSelect = ({ operatorList, operator, setOperator }) => {
         className="form-control form-select"
         onChange={(e) => setOperator(e.target.value)}
       >
-        <option key="0" defaultValue=""></option>
+        <option key={0} defaultValue=""></option>
         {operatorList.map((element, index) => {
           return (
             <option key={index + 1} value={element}>

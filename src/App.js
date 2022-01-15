@@ -135,7 +135,7 @@ const App = () => {
       );
       if (data.length > 0) {
         setDescendingList(data[0]["odpt:stationTimetableObject"]);
-        // console.log(data);
+        // console.log(data[0]["odpt:stationTimetableObject"]);
       }
     };
     getDescendingTimeTable();
@@ -199,6 +199,7 @@ const App = () => {
           trainTimeTable={trainTimeTable}
           color={lineColor}
           station={originStation}
+          time={time}
         />
       </div>
     </div>

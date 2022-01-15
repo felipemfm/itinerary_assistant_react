@@ -9,7 +9,7 @@ const LineSelect = ({lineList, line, setLine}) => {
         className="form-control form-select"
         onChange={(e) => setLine(e.target.value)}
       >
-        <option key="0" defaultValue=""></option>
+        <option key={0} defaultValue=""></option>
         {lineList.map((data, index) => {
           return data["odpt:stationOrder"].length > 1 ? (
             <option key={index + 1} value={data["owl:sameAs"]}>

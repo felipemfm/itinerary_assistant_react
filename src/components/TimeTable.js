@@ -2,17 +2,13 @@ import React from "react";
 
 import { getName, getCountdown } from "../functions/function";
 
-const AscendingTimeTable = ({
-  list,
-  operator,
-  time,
-  setTrainNumber,
-}) => {
+const TimeTable = ({ list, operator, time, setTrainNumber }) => {
   return (
     <div className="container overflow-auto" style={{ height: "400px" }}>
       <table className="table table-hover">
-        <thead className="sticky-top" style={{ "background-color": "white"}}>
-          <tr>
+        <thead className="sticky-top" style={{ backgroundColor: "white" }}>
+          <tr
+          key={0}>
             <th scope="col">Time</th>
             <th scope="col">⏱</th>
             <th scope="col">Type</th>
@@ -21,15 +17,15 @@ const AscendingTimeTable = ({
         </thead>
         <tbody>
           {list.map((data, index) => {
-            return data["odpt:departureTime"] > time ? (
+            let countdown = getCountdown(time, data["odpt:departureTime"]);
+            // console.log(countdown);
+            return countdown > 0 ? (
               <tr
-                key={index}
+                key={index+1}
                 onClick={() => setTrainNumber(data["odpt:trainNumber"])}
               >
                 <td>{data["odpt:departureTime"]}</td>
-                <td className=" fw-bold">
-                  {getCountdown(time, data["odpt:departureTime"])}
-                </td>
+                <td className=" fw-bold">{countdown}</td>
                 <td>
                   {data["odpt:trainType"].replace(
                     `odpt.TrainType:${operator}.`,
@@ -39,7 +35,7 @@ const AscendingTimeTable = ({
                 <td>{getName(data["odpt:destinationStation"][0])}</td>
               </tr>
             ) : (
-              ""
+              false
             );
           })}
         </tbody>
@@ -48,4 +44,4 @@ const AscendingTimeTable = ({
   );
 };
 
-export default AscendingTimeTable;
+export default TimeTable;

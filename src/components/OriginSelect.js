@@ -9,7 +9,7 @@ const OriginSelect = ({ stationList, originStation, setOriginStation }) => {
         className="form-control form-select"
         onChange={(e) => setOriginStation(e.target.value)}
       >
-        <option value="" defaultValue></option>
+        <option key={0} value="" defaultValue></option>
         {stationList.map((data) => {
           return (
             <option key={data["odpt:index"] + 1} value={data["odpt:station"]}>
