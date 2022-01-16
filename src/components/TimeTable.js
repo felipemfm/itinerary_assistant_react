@@ -1,6 +1,8 @@
 import React from "react";
 
 import { getName, getCountdown } from "../functions/function";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 const TimeTable = ({ list, operator, time, setTrainNumber }) => {
   return (
@@ -10,7 +12,7 @@ const TimeTable = ({ list, operator, time, setTrainNumber }) => {
           <tr
           key={0}>
             <th scope="col">Time</th>
-            <th scope="col">⏱</th>
+            <th scope="col"><FontAwesomeIcon icon={faClock}/></th>
             <th scope="col">Type</th>
             <th scope="col">Destination</th>
           </tr>

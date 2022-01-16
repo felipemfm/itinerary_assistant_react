@@ -95,16 +95,20 @@ const App = () => {
         );
         setLineColor(data[0]["odpt:color"]);
         setAscending(
-          data[0]["odpt:ascendingRailDirection"].replace(
-            "odpt.RailDirection:",
-            ""
-          )
+          data[0]["odpt:ascendingRailDirection"]
+            ? data[0]["odpt:ascendingRailDirection"].replace(
+                "odpt.RailDirection:",
+                ""
+              )
+            : "Ascending"
         );
         setDescending(
-          data[0]["odpt:descendingRailDirection"].replace(
-            "odpt.RailDirection:",
-            ""
-          )
+          data[0]["odpt:descendingRailDirection"]
+            ? data[0]["odpt:descendingRailDirection"].replace(
+                "odpt.RailDirection:",
+                ""
+              )
+            : "Descending"
         );
         setStationList(data[0]["odpt:stationOrder"]);
       };
