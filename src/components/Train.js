@@ -11,7 +11,7 @@ import { getName } from "../functions/function";
 
 const apiKey = process.env.REACT_APP_API_KEY;
 
-const Train = () => {
+const Train = ({ language }) => {
   const [day, setDay] = useState("");
   const [time, setTime] = useState("");
   const operatorList = [
@@ -92,9 +92,7 @@ const Train = () => {
         const { data } = await axios.get(
           `https://api-tokyochallenge.odpt.org/api/v4/odpt:Railway?odpt:operator=odpt.Operator:${operator}&acl:consumerKey=${apiKey}`
         );
-        // console.log(
-        //   `https://api-tokyochallenge.odpt.org/api/v4/odpt:Railway?odpt:operator=odpt.Operator:${operator}&acl:consumerKey=${apiKey}`
-        // );
+        // console.log(data);
         setLineList(data);
       };
       getLine();
@@ -167,7 +165,7 @@ const Train = () => {
         `https://api-tokyochallenge.odpt.org/api/v4/datapoints/odpt.TrainTimetable:${name}.${trainNumber}.${day}?acl:consumerKey=${apiKey}`
       );
       if (data.length > 0) {
-        // console.log(data[0]["odpt:trainTimetableObject"]);
+        console.log(data[0]["odpt:trainTimetableObject"]);
         setTrainTimeTable(data[0]["odpt:trainTimetableObject"]);
       }
     };
@@ -184,30 +182,45 @@ const Train = () => {
             operatorList={operatorList}
             operator={operator}
             setOperator={setOperator}
+            language={language}
           />
-          <LineSelect lineList={lineList} line={line} setLine={setLine} />
+          <LineSelect
+            lineList={lineList}
+            line={line}
+            setLine={setLine}
+            language={language}
+          />
           <OriginSelect
             stationList={stationList}
             originStation={originStation}
             setOriginStation={setOriginStation}
+            language={language}
           />
         </div>
         <div className="col">
-          <p className="fs-3">Direction: {getName(ascending)}</p>
+          <p className="fs-3">
+            {language === "en" ? "Direction:" : "行き先："}
+            {getName(ascending)}
+          </p>
           <TimeTable
             list={ascendingList}
             operator={operator}
             time={time}
             setTrainNumber={setTrainNumber}
+            language={language}
           />
         </div>
         <div className="col">
-          <p className="fs-3">Direction: {getName(descending)}</p>
+          <p className="fs-3">
+            {language === "en" ? "Direction:" : "行き先："}
+            {getName(descending)}
+          </p>
           <TimeTable
             list={descendingList}
             operator={operator}
             time={time}
             setTrainNumber={setTrainNumber}
+            language={language}
           />
         </div>
       </div>
@@ -218,6 +231,7 @@ const Train = () => {
           color={lineColor}
           station={originStation}
           time={time}
+          language={language}
         />
       </div>
     </div>

@@ -1,9 +1,9 @@
 import React from "react";
 
-const LineSelect = ({lineList, line, setLine}) => {
+const LineSelect = ({lineList, line, setLine, language}) => {
   return (
     <div className="form-group">
-      <label className="form-label">Train Line</label>
+      <label className="form-label">{language === "en" ? "Train Line" : "線路"}</label>
       <select
         value={line}
         className="form-control form-select"
@@ -13,7 +13,7 @@ const LineSelect = ({lineList, line, setLine}) => {
         {lineList.map((data, index) => {
           return data["odpt:stationOrder"].length > 1 ? (
             <option key={index + 1} value={data["owl:sameAs"]}>
-              {data["odpt:railwayTitle"]["en"]}
+              {data["odpt:railwayTitle"][`${language}`]}
             </option>
           ) : (
             ""

@@ -1,9 +1,9 @@
 import React from "react";
 
-const OperatorSelect = ({ operatorList, operator, setOperator }) => {
+const OperatorSelect = ({ operatorList, operator, setOperator, language }) => {
   return (
     <div className="form-group">
-      <label className="form-label">Line Operator</label>
+      <label className="form-label">{language === "en" ? "Line Operator" : "鉄道会社"}</label>
       <select
         value={operator}
         className="form-control form-select"

@@ -1,9 +1,9 @@
 import React from "react";
 
-const OriginSelect = ({ stationList, originStation, setOriginStation }) => {
+const OriginSelect = ({ stationList, originStation, setOriginStation, language }) => {
   return (
     <div className="form-group">
-      <label className="form-label">Origin Station</label>
+      <label className="form-label">{language === "en" ? "Station of Origin" : "発車駅"}</label>
       <select
         value={originStation}
         className="form-control form-select"
@@ -13,7 +13,7 @@ const OriginSelect = ({ stationList, originStation, setOriginStation }) => {
         {stationList.map((data) => {
           return (
             <option key={data["odpt:index"] + 1} value={data["odpt:station"]}>
-              {data["odpt:stationTitle"]["en"]}
+              {data["odpt:stationTitle"][`${language}`]}
             </option>
           );
         })}

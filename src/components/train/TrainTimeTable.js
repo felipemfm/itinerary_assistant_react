@@ -8,11 +8,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const TrainTimeTable = ({ trainTimeTable, color, station, time }) => {
+const TrainTimeTable = ({ trainTimeTable, color, station, time, language }) => {
   return (
     <div className="container">
       <p className="fs-6 fw-light text-center mt-3">
-        Click on a specific train to see its itinerary (availability may vary by company)
+        {language === "en"
+          ? "Click on a specific train to see its itinerary (availability may vary by company)"
+          : "列車をクリックすると旅程が表示されます（会社により異なります)"}
       </p>
       <ul className="list-inline">
         {trainTimeTable.map((data, index) => {
