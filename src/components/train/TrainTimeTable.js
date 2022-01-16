@@ -1,6 +1,6 @@
 import React from "react";
 
-import { getName, getCountdown } from "../functions/function";
+import { getName, getCountdown } from "../../functions/function";
 import {
   faAngleDoubleRight,
   faTimes,
@@ -12,7 +12,7 @@ const TrainTimeTable = ({ trainTimeTable, color, station, time }) => {
   return (
     <div className="container">
       <p className="fs-6 fw-light text-center mt-3">
-        Click on a specific train to see its itinerary
+        Click on a specific train to see its itinerary (availability may vary by company)
       </p>
       <ul className="list-inline">
         {trainTimeTable.map((data, index) => {
