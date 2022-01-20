@@ -4,7 +4,7 @@ import { getName, getCountdown } from "../../functions/function";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 
-const TimeTable = ({ list, operator, time, setTrainNumber, language}) => {
+const StationTimeTable = ({ list, operator, time, setTrainNumber, language}) => {
   return (
     <div className="container overflow-auto" style={{ height: "400px" }}>
       <table className="table table-hover">
@@ -12,8 +12,7 @@ const TimeTable = ({ list, operator, time, setTrainNumber, language}) => {
           <tr
           key={0}>
             <th scope="col">{language === "en" ? "Time" : "時間"}</th>
-            <th scope="col"><FontAwesomeIcon icon={faClock}/></th>
-            <th scope="col">{language === "en" ? "Type" : "種類"}</th>
+            <th scope="col">{language === "en" ? "Min" : "分"}</th>
             <th scope="col">{language === "en" ? "Destination" : "行き先"}</th>
           </tr>
         </thead>
@@ -28,13 +27,10 @@ const TimeTable = ({ list, operator, time, setTrainNumber, language}) => {
               >
                 <td>{data["odpt:departureTime"]}</td>
                 <td className=" fw-bold">{countdown}</td>
-                <td>
-                  {data["odpt:trainType"].replace(
+                <td><span className="fw-bold">{getName(data["odpt:destinationStation"][0])}</span> {data["odpt:trainType"].replace(
                     `odpt.TrainType:${operator}.`,
                     ""
-                  )}
-                </td>
-                <td>{getName(data["odpt:destinationStation"][0])}</td>
+                  )}</td>
               </tr>
             ) : (
               false
@@ -46,4 +42,4 @@ const TimeTable = ({ list, operator, time, setTrainNumber, language}) => {
   );
 };
 
-export default TimeTable;
+export default StationTimeTable;

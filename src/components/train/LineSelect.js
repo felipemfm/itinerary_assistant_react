@@ -3,7 +3,7 @@ import React from "react";
 const LineSelect = ({lineList, line, setLine, language}) => {
   return (
     <div className="form-group">
-      <label className="form-label">{language === "en" ? "Train Line" : "線路"}</label>
+      <label className="form-label">{language === "en" ? "Train Line" : "路線"}</label>
       <select
         value={line}
         className="form-control form-select"

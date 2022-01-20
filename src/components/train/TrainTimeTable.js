@@ -1,73 +1,131 @@
 import React from "react";
 
-import { getName, getCountdown } from "../../functions/function";
+import { getCountdown } from "../../functions/function";
 import {
-  faAngleDoubleRight,
-  faTimes,
+  faSlash,
   faMapMarkerAlt,
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const TrainTimeTable = ({ trainTimeTable, color, station, time, language }) => {
+const TrainTimeTable = ({
+  stationListView,
+  trainTimeTable,
+  color,
+  station,
+  time,
+  language,
+}) => {
+  // if (trainTimeTable.length > 0) {
+  // console.log(stationListView);
+  //   console.log(trainTimeTable);
+  // }
   return (
     <div className="container">
-      <p className="fs-6 fw-light text-center mt-3">
-        {language === "en"
-          ? "Click on a specific train to see its itinerary (availability may vary by company)"
-          : "列車をクリックすると旅程が表示されます（会社により異なります)"}
-      </p>
-      <ul className="list-inline">
-        {trainTimeTable.map((data, index) => {
-          var countdown = getCountdown(
-            time,
-            data["odpt:departureTime"] || data["odpt:arrivalTime"]
-          );
-          return (
-            <span
-              key={index}
-              style={{
-                backgroundColor: countdown > 0 ? color : "grey",
-              }}
-              className="p-1"
-            >
-              <li
-                style={{ width: "200px" }}
-                className="list-inline-item my-1 text-center p-1"
-              >
-                <p className="p-1 fw-bold">
-                  {station ===
-                  (data["odpt:departureStation"] ||
-                    data["odpt:arrivalStation"]) ? (
-                    <FontAwesomeIcon
-                      icon={faMapMarkerAlt}
-                      style={{ color: "red" }}
-                    />
+      <div className="container overflow-auto" style={{ height: "400px" }}>
+        <table className="table">
+          <thead>
+            <tr key={0}>
+              <th scope="col">{language === "en" ? "Min" : "分"}</th>
+              <th scope="col">{language === "en" ? "Station" : "駅"}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stationListView.map((data, index) => {
+              var departure_time = 0;
+              trainTimeTable.forEach((element) => {
+                if (
+                  data["odpt:station"] ===
+                  (element["odpt:departureStation"] ||
+                    element["odpt:arrivalStation"])
+                )
+                  departure_time =
+                    element["odpt:departureTime"] ||
+                    element["odpt:arrivalTime"];
+              });
+              return departure_time !== 0 ? (
+                <>
+                  {getCountdown(time, departure_time) > 0 ? (
+                    <tr key={index + 1}>
+                      <td>
+                        <div
+                          style={{
+                            border: "solid",
+                            borderColor: color,
+                            height: 35,
+                            width: 35,
+                            borderRadius: 5,
+                          }}
+                          className="position-relative"
+                        >
+                          <div className="position-absolute top-50 start-50 translate-middle">
+                            {getCountdown(time, departure_time)}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="fw-bold">
+                        {station === data["odpt:station"] ? (
+                          <FontAwesomeIcon
+                            icon={faMapMarkerAlt}
+                            style={{ color: "red" }}
+                          />
+                        ) : (
+                          ""
+                        )}
+                        {data["odpt:stationTitle"][`${language}`]}
+                      </td>
+                    </tr>
                   ) : (
-                    ""
+                    <tr key={index + 1}>
+                      <td>
+                        <div
+                          style={{
+                            border: "solid",
+                            borderColor: color,
+                            height: 35,
+                            width: 35,
+                            borderRadius: 5,
+                          }}
+                          className="position-relative"
+                        >
+                          <div className="position-absolute top-50 start-50 translate-middle">
+                            <FontAwesomeIcon icon={faSlash} />
+                          </div>
+                        </div>
+                      </td>
+                      <td className="fw-lighter">
+                        {data["odpt:stationTitle"][`${language}`]}
+                      </td>
+                    </tr>
                   )}
-                  {getName(
-                    data["odpt:departureStation"] || data["odpt:arrivalStation"]
-                  )}
-                </p>
-                <span className="badge bg-dark">
-                  {countdown > 0 ? (
-                    `${countdown}`
-                  ) : (
-                    <FontAwesomeIcon icon={faTimes} />
-                  )}
-                </span>
-              </li>
-              <li className="list-inline-item">
-                {index !== trainTimeTable.length - 1 ? (
-                  <FontAwesomeIcon icon={faAngleDoubleRight} />
-                ) : (
-                  <FontAwesomeIcon icon={faTimes} />
-                )}
-              </li>
-            </span>
-          );
-        })}
-      </ul>
+                </>
+              ) : (
+                <tr key={index + 1}>
+                  <td>
+                    <div
+                      style={{
+                        border: "solid",
+                        borderColor: "grey",
+                        height: 35,
+                        width: 35,
+                        borderRadius: 5,
+                      }}
+                      className="position-relative"
+                    >
+                      <div className="position-absolute top-50 start-50 translate-middle">
+                        <FontAwesomeIcon icon={faMinus} />
+                      </div>
+                    </div>
+                  </td>
+                  <td className="text-decoration-line-through">
+                    {data["odpt:stationTitle"][`${language}`]}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
