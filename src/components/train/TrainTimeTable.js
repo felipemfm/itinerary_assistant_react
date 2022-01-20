@@ -44,9 +44,9 @@ const TrainTimeTable = ({
                     element["odpt:arrivalTime"];
               });
               return departure_time !== 0 ? (
-                <>
+                <tr key={index + 1}>
                   {getCountdown(time, departure_time) > 0 ? (
-                    <tr key={index + 1}>
+                    <>
                       <td>
                         <div
                           style={{
@@ -74,9 +74,9 @@ const TrainTimeTable = ({
                         )}
                         {data["odpt:stationTitle"][`${language}`]}
                       </td>
-                    </tr>
+                    </>
                   ) : (
-                    <tr key={index + 1}>
+                    <>
                       <td>
                         <div
                           style={{
@@ -96,9 +96,9 @@ const TrainTimeTable = ({
                       <td className="fw-lighter">
                         {data["odpt:stationTitle"][`${language}`]}
                       </td>
-                    </tr>
+                    </>
                   )}
-                </>
+                </tr>
               ) : (
                 <tr key={index + 1}>
                   <td>

@@ -1,8 +1,6 @@
 import React from "react";
 
 import { getName, getCountdown } from "../../functions/function";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 const StationTimeTable = ({ list, operator, time, setTrainNumber, language}) => {
   return (
