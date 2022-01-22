@@ -3,40 +3,35 @@ import axios from "axios";
 
 import OperatorSelect from "./train/OperatorSelect";
 import LineSelect from "./train/LineSelect";
-import OriginSelect from "./train/OriginSelect";
+import StationSelect from "./train/StationSelect";
 import DirectionSelect from "./train/DirectionSelect";
 import StationTimeTable from "./train/StationTimeTable";
 import TrainTimeTable from "./train/TrainTimeTable";
 
 const apiKey = process.env.REACT_APP_API_KEY;
 
+const lineProfile = {
+  color: "",
+  ascending: "",
+  ascending_title: { en: "", ja: "" },
+  descending: "",
+  descending_title: { en: "", ja: "" },
+  code: "",
+  station_order: [{ index: "", station: "", title: { en: "", ja: "" } }],
+};
+const trainProfile = { station: "", time: false };
 const Train = ({ language }) => {
   const [day, setDay] = useState("");
   const [time, setTime] = useState("");
-  const operatorList = [
-    "JR-East",
-    "TokyoMetro",
-    "Toei",
-    "Keio",
-    "Keisei",
-    "Keikyu",
-    "Seibu",
-    "TamaMonorail",
-    "Tokyu",
-    "TWR",
-    "Yurikamome",
-  ];
   const [operator, setOperator] = useState("");
   const [lineList, setLineList] = useState([]);
   const [line, setLine] = useState("");
-  const [lineInfo, setLineInfo] = useState([0]);
-  const [stationList, setStationList] = useState([]);
-  const [stationListView, setStationListView] = useState([]);
-  const [originStation, setOriginStation] = useState("");
+  const [lineInfo, setLineInfo] = useState(lineProfile);
+  const [station, setStation] = useState("");
   const [direction, setDirection] = useState("");
   const [stationTimeTable, setStationTimeTable] = useState([]);
   const [trainNumber, setTrainNumber] = useState("");
-  const [trainTimeTable, setTrainTimeTable] = useState([0]);
+  const [trainTimeTable, setTrainTimeTable] = useState(trainProfile);
 
   useEffect(() => {
     const date = new Date();
@@ -54,37 +49,34 @@ const Train = ({ language }) => {
   });
 
   useEffect(() => {
-    setLineInfo([0]);
+    setLineInfo(lineProfile);
     setDirection("");
     setLineList([]);
-    setStationList([]);
     setStationTimeTable([]);
     setTrainTimeTable([]);
     setTrainNumber("");
-    setTrainTimeTable([0]);
-    setStationListView([]);
+    setTrainTimeTable(trainProfile);
   }, [operator]);
 
   useEffect(() => {
-    setLineInfo([0]);
+    setLineInfo(lineProfile);
     setDirection("");
-    setStationList([]);
     setStationTimeTable([]);
     setTrainTimeTable([]);
     setTrainNumber("");
-    setTrainTimeTable([0]);
-    setStationListView([]);
+    setTrainTimeTable([trainProfile]);
   }, [line]);
 
   useEffect(() => {
     setStationTimeTable([]);
     setTrainTimeTable([]);
     setDirection("");
-    setStationListView([]);
-  }, [originStation]);
+    setTrainTimeTable([trainProfile]);
+  }, [station]);
 
   useEffect(() => {
     setTrainTimeTable([]);
+    setTrainTimeTable([trainProfile]);
   }, [direction]);
 
   useEffect(() => {
@@ -94,7 +86,6 @@ const Train = ({ language }) => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
   useEffect(() => {
     if (operator !== "") {
       const getLine = async () => {
@@ -114,7 +105,7 @@ const Train = ({ language }) => {
         const { data } = await axios.get(
           `https://api-tokyochallenge.odpt.org/api/v4/datapoints/${line}?acl:consumerKey=${apiKey}`
         );
-        // console.log(data[0]["odpt:stationOrder"]);
+        // console.log(data);
         var ascending = data[0]["odpt:ascendingRailDirection"]
           ? data[0]["odpt:ascendingRailDirection"].replace(
               "odpt.RailDirection:",
@@ -127,33 +118,37 @@ const Train = ({ language }) => {
               ""
             )
           : "Descending";
-        setLineInfo([
-          {
-            color: data[0]["odpt:color"],
-            ascending: ascending,
-            ascending_tile: {
-              en: data[0]["odpt:stationOrder"][
-                data[0]["odpt:stationOrder"].length - 1
-              ]["odpt:stationTitle"]["en"],
-              ja: data[0]["odpt:stationOrder"][
-                data[0]["odpt:stationOrder"].length - 1
-              ]["odpt:stationTitle"]["ja"],
-            },
-            descending: descending,
-            descending_title: {
-              en: data[0]["odpt:stationOrder"][0]["odpt:stationTitle"]["en"],
-              ja: data[0]["odpt:stationOrder"][0]["odpt:stationTitle"]["ja"],
-            },
-          },
-        ]);
-        setStationList(data[0]["odpt:stationOrder"]);
+
+        var stationOrder = [];
+        data[0]["odpt:stationOrder"].forEach((element) => {
+          const aux = {
+            index: element["odpt:index"],
+            station: element["odpt:station"],
+            title: element["odpt:stationTitle"],
+          };
+          stationOrder = [...stationOrder, aux];
+        });
+
+        setLineInfo({
+          color: data[0]["odpt:color"],
+          code: data[0]["odpt:lineCode"],
+          ascending: ascending,
+          ascending_title:
+            data[0]["odpt:stationOrder"][
+              data[0]["odpt:stationOrder"].length - 1
+            ]["odpt:stationTitle"],
+          descending: descending,
+          descending_title:
+            data[0]["odpt:stationOrder"][0]["odpt:stationTitle"],
+          station_order: stationOrder,
+        });
       };
       getStation();
     }
   }, [line]);
 
   useEffect(() => {
-    var name = originStation.replace("odpt.Station:", "");
+    var name = station.replace("odpt.Station:", "");
     const getStationTimeTable = async () => {
       const { data } = await axios.get(
         `https://api-tokyochallenge.odpt.org/api/v4/datapoints/odpt.StationTimetable:${name}.${direction}.${day}?acl:consumerKey=${apiKey}`
@@ -165,35 +160,55 @@ const Train = ({ language }) => {
     getStationTimeTable();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [direction]);
-  useEffect(() => {
-    setStationListView(
-      lineInfo[0]["ascending"] === direction
-        ? stationList
-        : stationList.reverse()
-    );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lineInfo, direction]);
+
   useEffect(() => {
     var name = line.replace("odpt.Railway:", "");
     const getTrainTimeTable = async () => {
-      const { data } = await axios.get(
-        `https://api-tokyochallenge.odpt.org/api/v4/datapoints/odpt.TrainTimetable:${name}.${trainNumber}.${day}?acl:consumerKey=${apiKey}`
-      );
+      const { data } = await axios
+        .get(
+          `https://api-tokyochallenge.odpt.org/api/v4/datapoints/odpt.TrainTimetable:${name}.${trainNumber}.${day}?acl:consumerKey=${apiKey}`
+        )
+        .catch((error) => console.log(error));
       if (data.length > 0) {
-        // console.log(data[0]);
-        setTrainTimeTable(data[0]["odpt:trainTimetableObject"]);
+        var train_time_table = [],
+          i = 0,
+          line_info_copy =
+            lineInfo["ascending"] === direction
+              ? [...lineInfo["station_order"]]
+              : [...lineInfo["station_order"]].reverse();
+
+        line_info_copy.forEach((element) => {
+          var time = false;
+          if (
+            element["station"] ===
+            (data[0]["odpt:trainTimetableObject"][i]["odpt:departureStation"] ||
+              data[0]["odpt:trainTimetableObject"][i]["odpt:arrivalStation"])
+          ) {
+            time =
+              data[0]["odpt:trainTimetableObject"][i]["odpt:departureTime"] ||
+              data[0]["odpt:trainTimetableObject"][i]["odpt:arrivalTime"];
+            i++;
+          }
+          train_time_table.push({
+            station: element["station"],
+            time: time,
+          });
+        });
+        // console.log(train_time_table);
+
+        setTrainTimeTable(train_time_table);
       }
     };
     getTrainTimeTable();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trainNumber]);
+  // console.log(trainTimeTable);
   return (
     <div className="container-fluid">
       <div className="row">
         <div className="col mt-5">
           <p className="text-center fs-2">{time}</p>
           <OperatorSelect
-            operatorList={operatorList}
             operator={operator}
             setOperator={setOperator}
             language={language}
@@ -204,39 +219,53 @@ const Train = ({ language }) => {
             setLine={setLine}
             language={language}
           />
-          <OriginSelect
-            stationList={stationList}
-            originStation={originStation}
-            setOriginStation={setOriginStation}
+          <StationSelect
+            stationOrder={lineInfo["station_order"]}
+            station={station}
+            setStation={setStation}
             language={language}
           />
           <DirectionSelect
             lineInfo={lineInfo}
             direction={direction}
             setDirection={setDirection}
+            station={station}
             language={language}
           />
         </div>
         <div className="col">
           <p className="fs-3">{language === "en" ? "Schedule" : "ダイヤ"}</p>
-          <StationTimeTable
-            list={stationTimeTable}
-            operator={operator}
-            time={time}
-            setTrainNumber={setTrainNumber}
-            language={language}
-          />
+          {operator && line && station && direction ? (
+            <StationTimeTable
+              list={stationTimeTable}
+              operator={operator}
+              time={time}
+              setTrainNumber={setTrainNumber}
+              language={language}
+            />
+          ) : (
+            false
+          )}
         </div>
         <div className="col">
           <p className="fs-3">
-            {language === "en" ? "Train Itinerary" : "列車経路"}
+            {language === "en" ? "Train Itinerary" : "経路"}
           </p>
-          {trainTimeTable.length > 0 ? (
+          {operator &&
+          line &&
+          station &&
+          direction &&
+          trainTimeTable.length > 0 ? (
             <TrainTimeTable
-              stationListView={stationListView}
+              stationListView={
+                lineInfo["ascending"] === direction
+                  ? [...lineInfo["station_order"]]
+                  : [...lineInfo["station_order"]].reverse()
+              }
               trainTimeTable={trainTimeTable}
-              color={lineInfo[0]["color"]}
-              station={originStation}
+              color={lineInfo["color"]}
+              code={lineInfo["code"]}
+              station={station}
               time={time}
               language={language}
             />
@@ -245,6 +274,7 @@ const Train = ({ language }) => {
           )}
         </div>
       </div>
+      <div className="container text-center py-5">Schedule entries with a + will have adicional information displayed if clicked.</div>
     </div>
   );
 };
