@@ -8,6 +8,9 @@ import DirectionSelect from "./train/DirectionSelect";
 import StationTimeTable from "./train/StationTimeTable";
 import TrainTimeTable from "./train/TrainTimeTable";
 
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 const apiKey = process.env.REACT_APP_API_KEY;
 
 const lineProfile = {
@@ -19,10 +22,9 @@ const lineProfile = {
   code: "",
   station_order: [{ index: "", station: "", title: { en: "", ja: "" } }],
 };
-const trainProfile = { station: "", time: false };
-const Train = ({ language }) => {
+const trainProfile = [{ station: "", time: false }];
+const Train = ({ language, time }) => {
   const [day, setDay] = useState("");
-  const [time, setTime] = useState("");
   const [operator, setOperator] = useState("");
   const [lineList, setLineList] = useState([]);
   const [line, setLine] = useState("");
@@ -30,7 +32,7 @@ const Train = ({ language }) => {
   const [station, setStation] = useState("");
   const [direction, setDirection] = useState("");
   const [stationTimeTable, setStationTimeTable] = useState([]);
-  const [trainNumber, setTrainNumber] = useState("");
+  const [trainNumber, setTrainNumber] = useState(false);
   const [trainTimeTable, setTrainTimeTable] = useState(trainProfile);
 
   useEffect(() => {
@@ -49,43 +51,36 @@ const Train = ({ language }) => {
   });
 
   useEffect(() => {
-    setLineInfo(lineProfile);
     setDirection("");
     setLineList([]);
-    setStationTimeTable([]);
     setTrainTimeTable([]);
-    setTrainNumber("");
+    setTrainNumber(false);
+    setLineInfo(lineProfile);
+    setStationTimeTable([]);
     setTrainTimeTable(trainProfile);
   }, [operator]);
 
   useEffect(() => {
-    setLineInfo(lineProfile);
     setDirection("");
-    setStationTimeTable([]);
     setTrainTimeTable([]);
-    setTrainNumber("");
-    setTrainTimeTable([trainProfile]);
+    setTrainNumber(false);
+    setLineInfo(lineProfile);
+    setStationTimeTable([]);
+    setTrainTimeTable(trainProfile);
   }, [line]);
 
   useEffect(() => {
-    setStationTimeTable([]);
-    setTrainTimeTable([]);
     setDirection("");
-    setTrainTimeTable([trainProfile]);
+    setTrainNumber(false);
+    setStationTimeTable([]);
+    setTrainTimeTable(trainProfile);
   }, [station]);
 
   useEffect(() => {
-    setTrainTimeTable([]);
-    setTrainTimeTable([trainProfile]);
+    setTrainNumber(false);
+    setTrainTimeTable(trainProfile);
   }, [direction]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const date = new Date();
-      setTime(`${date.getHours()}:${("0" + date.getMinutes()).slice(-2)}`);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
   useEffect(() => {
     if (operator !== "") {
       const getLine = async () => {
@@ -158,8 +153,7 @@ const Train = ({ language }) => {
       }
     };
     getStationTimeTable();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [direction]);
+  }, [day, direction, station]);
 
   useEffect(() => {
     var name = line.replace("odpt.Railway:", "");
@@ -169,6 +163,7 @@ const Train = ({ language }) => {
           `https://api-tokyochallenge.odpt.org/api/v4/datapoints/odpt.TrainTimetable:${name}.${trainNumber}.${day}?acl:consumerKey=${apiKey}`
         )
         .catch((error) => console.log(error));
+      // console.log(data);
       if (data.length > 0) {
         var train_time_table = [],
           i = 0,
@@ -176,13 +171,15 @@ const Train = ({ language }) => {
             lineInfo["ascending"] === direction
               ? [...lineInfo["station_order"]]
               : [...lineInfo["station_order"]].reverse();
-
         line_info_copy.forEach((element) => {
           var time = false;
           if (
+            data[0]["odpt:trainTimetableObject"][i] &&
             element["station"] ===
-            (data[0]["odpt:trainTimetableObject"][i]["odpt:departureStation"] ||
-              data[0]["odpt:trainTimetableObject"][i]["odpt:arrivalStation"])
+              (data[0]["odpt:trainTimetableObject"][i][
+                "odpt:departureStation"
+              ] ||
+                data[0]["odpt:trainTimetableObject"][i]["odpt:arrivalStation"])
           ) {
             time =
               data[0]["odpt:trainTimetableObject"][i]["odpt:departureTime"] ||
@@ -194,20 +191,15 @@ const Train = ({ language }) => {
             time: time,
           });
         });
-        // console.log(train_time_table);
-
         setTrainTimeTable(train_time_table);
       }
     };
     getTrainTimeTable();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trainNumber]);
-  // console.log(trainTimeTable);
+  }, [day, direction, line, lineInfo, trainNumber]);
   return (
     <div className="container-fluid">
       <div className="row">
-        <div className="col mt-5">
-          <p className="text-center fs-2">{time}</p>
+        <div className="col-3 mt-5">
           <OperatorSelect
             operator={operator}
             setOperator={setOperator}
@@ -233,7 +225,7 @@ const Train = ({ language }) => {
             language={language}
           />
         </div>
-        <div className="col">
+        <div className="col-4">
           <p className="fs-3">{language === "en" ? "Schedule" : "ダイヤ"}</p>
           {operator && line && station && direction ? (
             <StationTimeTable
@@ -247,15 +239,11 @@ const Train = ({ language }) => {
             false
           )}
         </div>
-        <div className="col">
+        <div className="col-5">
           <p className="fs-3">
             {language === "en" ? "Train Itinerary" : "経路"}
           </p>
-          {operator &&
-          line &&
-          station &&
-          direction &&
-          trainTimeTable.length > 0 ? (
+          {operator && line && station && direction ? (
             <TrainTimeTable
               stationListView={
                 lineInfo["ascending"] === direction
@@ -274,7 +262,19 @@ const Train = ({ language }) => {
           )}
         </div>
       </div>
-      <div className="container text-center py-5">Schedule entries with a + will have adicional information displayed if clicked.</div>
+
+      {language === "en" ? (
+        <div className="text-center py-5">
+          Schedule entries with a <FontAwesomeIcon icon={faPlus} /> will have
+          additional information displayed if clicked.
+        </div>
+      ) : (
+        <div className="text-center py-5">
+          <FontAwesomeIcon icon={faPlus} />{" "}
+          付いたスケジュール項目は、クリックすると追加情報が表示されます。
+        </div>
+      )}
+
     </div>
   );
 };

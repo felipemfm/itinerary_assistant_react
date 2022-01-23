@@ -19,6 +19,9 @@ const TrainTimeTable = ({
         <table className="table">
           <thead>
             <tr key={0}>
+              <th scope="col">
+                <FontAwesomeIcon icon={faMapMarkerAlt} />
+              </th>
               <th scope="col">{language === "en" ? "Code" : "コード"}</th>
               <th scope="col">{language === "en" ? "Station" : "駅"}</th>
             </tr>
@@ -27,6 +30,16 @@ const TrainTimeTable = ({
             {stationListView.map((data, index) => {
               return (
                 <tr key={index + 1}>
+                  <td id="origin_station">
+                    {station === data["station"] ? (
+                      <FontAwesomeIcon
+                        icon={faMapMarkerAlt}
+                        style={{ color: "red" }}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </td>
                   <td>
                     <div
                       style={{
@@ -52,14 +65,6 @@ const TrainTimeTable = ({
                   <td>
                     <ul className="list-unstyled">
                       <li className="fw-bold">
-                        {station === data["station"] ? (
-                          <FontAwesomeIcon
-                            icon={faMapMarkerAlt}
-                            style={{ color: "red" }}
-                          />
-                        ) : (
-                          ""
-                        )}
                         {data["title"][`${language}`]}
                       </li>
                       {trainTimeTable.length > 1 ? (

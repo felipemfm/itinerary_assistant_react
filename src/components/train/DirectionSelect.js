@@ -8,18 +8,19 @@ const DirectionSelect = ({
   station,
   language,
 }) => {
-  var ascending_tile = "";
+  var ascending_title = "";
   var descending_title = "";
   if (lineInfo["ascending_tile"] || lineInfo["descending_title"]) {
-    ascending_tile = lineInfo["ascending_title"][`${language}`];
+    ascending_title = lineInfo["ascending_title"][`${language}`];
     descending_title = lineInfo["descending_title"][`${language}`];
   }
   var stationName = "";
   if (station) {
     stationName = station.replace("odpt.Station:", "");
-    stationName = getName(stationName);
+    stationName = getName(stationName)
+      .replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, "")
+      .toLowerCase();
   }
-  const regex = /[!"#$%&'*+,-./:;()<=>?@[\]^_`{|}~]\s/g;
   return (
     <div className="form-group">
       <label className="form-label">
@@ -35,9 +36,12 @@ const DirectionSelect = ({
           key={2}
           value={lineInfo["descending"]}
           disabled={
-            lineInfo["ascending_tile"] &&
+            lineInfo["descending_title"] &&
             stationName ===
-              lineInfo["descending_title"]["en"].replace(regex, "")
+              lineInfo["descending_title"]["en"]
+                .normalize("NFD")
+                .replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, "")
+                .toLowerCase()
               ? true
               : false
           }
@@ -48,14 +52,17 @@ const DirectionSelect = ({
           key={1}
           value={lineInfo["ascending"]}
           disabled={
-            lineInfo["ascending_tile"] &&
+            lineInfo["ascending_title"] &&
             stationName ===
-              lineInfo["ascending_tile"]["en"].replace(regex, "")
+              lineInfo["ascending_title"]["en"]
+                .normalize("NFD")
+                .replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, "")
+                .toLowerCase()
               ? true
               : false
           }
         >
-          {ascending_tile}
+          {ascending_title}
         </option>
       </select>
     </div>

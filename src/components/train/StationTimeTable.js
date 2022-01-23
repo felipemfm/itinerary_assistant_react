@@ -17,29 +17,31 @@ const StationTimeTable = ({
           <tr key={0}>
             <th scope="col">{language === "en" ? "Time" : "時間"}</th>
             <th scope="col">{language === "en" ? "Min" : "分"}</th>
-            <th scope="col">{language === "en" ? "Destination" : "行き先"}</th>
+            <th scope="col">{language === "en" ? "Info" : "情報"}</th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
           {list.map((data, index) => {
             let countdown = getCountdown(time, data["odpt:departureTime"]);
-            // console.log(countdown);
-            return countdown > 0 ? (
+            return countdown > 0 && Object.keys(data).length > 0 ? (
               <tr
                 key={index + 1}
                 onClick={
                   data["odpt:trainNumber"]
                     ? () => setTrainNumber(data["odpt:trainNumber"])
-                    : false
-                }
+                    : null
+                }                
               >
                 <td>{data["odpt:departureTime"]}</td>
                 <td className=" fw-bold">{countdown}</td>
                 <td>
                   <span className="fw-bold">
-                    {getName(data["odpt:destinationStation"][0])}
-                  </span>{" "}
+                    {data["odpt:destinationStation"]
+                      ? getName(data["odpt:destinationStation"][0])
+                      : ""}
+                  </span>
+                  {" "}
                   {data["odpt:trainType"].replace(
                     `odpt.TrainType:${operator}.`,
                     ""

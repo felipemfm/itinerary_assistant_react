@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import Bus from "./components/Bus";
 import Train from "./components/Train";
 
 const App = () => {
   // const [mode, setMode] = useState("Train");
   const [language, setLanguage] = useState("en");
+  const [time, setTime] = useState("");
   // const switchMode = () => {
   // switch (mode) {
   //   case "Train":
@@ -16,14 +17,24 @@ const App = () => {
   // }
   // };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const date = new Date();
+      setTime(`${date.getHours()}:${("0" + date.getMinutes()).slice(-2)}`);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
   return (
     <div className="container my-2">
       <div className="row align-items-center">
-        <div className="col-8">
+        <div className="col-4">
           <h3>
             {language === "en" ? "Tokyo Public Transportaion" : "東京公共交通"}
           </h3>
           <h3>{language === "en" ? "Helper" : "ヘルパー "}</h3>
+        </div>
+        <div className="col-4">
+          <p className="text-center fs-2">{time}</p>
         </div>
         <div className="col-2">
           {/* <div className="btn-group btn-group-sm" role="group">
@@ -82,7 +93,10 @@ const App = () => {
           </div>
         </div>
       </div>
-      {<Train language={language}/>}
+      {<Train language={language} time={time} />}
+      <div class="footer-copyright text-center py-3">
+        © 2022 Copyright <a href="https://github.com/felipemfm">felipemfm</a>
+      </div>
     </div>
   );
 };
