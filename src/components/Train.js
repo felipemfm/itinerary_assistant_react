@@ -85,7 +85,7 @@ const Train = ({ language, time }) => {
     if (operator !== "") {
       const getLine = async () => {
         const { data } = await axios.get(
-          `https://api-tokyochallenge.odpt.org/api/v4/odpt:Railway?odpt:operator=odpt.Operator:${operator}&acl:consumerKey=${apiKey}`
+          `https://api.odpt.org/api/v4/odpt:Railway?odpt:operator=odpt.Operator:${operator}&acl:consumerKey=${apiKey}`
         );
         // console.log(data);
         setLineList(data);
@@ -98,7 +98,7 @@ const Train = ({ language, time }) => {
     if (line !== "") {
       const getStation = async () => {
         const { data } = await axios.get(
-          `https://api-tokyochallenge.odpt.org/api/v4/datapoints/${line}?acl:consumerKey=${apiKey}`
+          `https://api.odpt.org/api/v4/datapoints/${line}?acl:consumerKey=${apiKey}`
         );
         // console.log(data);
         var ascending = data[0]["odpt:ascendingRailDirection"]
@@ -146,7 +146,7 @@ const Train = ({ language, time }) => {
     var name = station.replace("odpt.Station:", "");
     const getStationTimeTable = async () => {
       const { data } = await axios.get(
-        `https://api-tokyochallenge.odpt.org/api/v4/datapoints/odpt.StationTimetable:${name}.${direction}.${day}?acl:consumerKey=${apiKey}`
+        `https://api.odpt.org/api/v4/datapoints/odpt.StationTimetable:${name}.${direction}.${day}?acl:consumerKey=${apiKey}`
       );
       if (data.length > 0) {
         setStationTimeTable(data[0]["odpt:stationTimetableObject"]);
@@ -160,7 +160,7 @@ const Train = ({ language, time }) => {
     const getTrainTimeTable = async () => {
       const { data } = await axios
         .get(
-          `https://api-tokyochallenge.odpt.org/api/v4/datapoints/odpt.TrainTimetable:${name}.${trainNumber}.${day}?acl:consumerKey=${apiKey}`
+          `https://api.odpt.org/api/v4/datapoints/odpt.TrainTimetable:${name}.${trainNumber}.${day}?acl:consumerKey=${apiKey}`
         )
         .catch((error) => console.log(error));
       // console.log(data);

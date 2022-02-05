@@ -29,9 +29,9 @@ const App = () => {
       <div className="row align-items-center">
         <div className="col-4">
           <h3>
-            {language === "en" ? "Tokyo Public Transportaion" : "東京公共交通"}
+            {language === "en" ? "Tokyo Railway Itinerary" : "東京鉄道経路"}
           </h3>
-          <h3>{language === "en" ? "Helper" : "ヘルパー "}</h3>
+          <h3>{language === "en" ? "Assistant" : "アシスタント "}</h3>
         </div>
         <div className="col-4">
           <p className="text-center fs-2">{time}</p>
