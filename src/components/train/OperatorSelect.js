@@ -13,7 +13,7 @@ const OperatorSelect = ({ operator, setOperator, language }) => {
       >
         <option key={0} defaultValue=""></option>
         <option key={1} value="JR-East">
-          {language === "en" ? "JR-East" : "JR東日本"}{" "}
+          {language === "en" ? "JR-East" : "JR東日本"}
         </option>
         <option key={2} value="TokyoMetro">
           {language === "en" ? "Tokyo Metro" : "東京メトロ"}
